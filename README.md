@@ -3,7 +3,7 @@
 > A Zapier-style webhook connector: reshape a JSON payload with declarative field
 > mapping and relay it to any webhook, with delivery logging and SSRF-guarded targets.
 
-**Live demo:** _(added after deploy)_ — a demo connector is pre-loaded, pointed at [httpbin.org](https://httpbin.org/post) so you can send a test event immediately and see exactly what was sent and received.
+**Live demo:** [flowrelay.vercel.app](https://flowrelay.vercel.app) — a demo connector is pre-loaded, pointed at [httpbin.org](https://httpbin.org/post) so you can send a test event immediately and see exactly what was sent and received.
 
 ## What it does
 
