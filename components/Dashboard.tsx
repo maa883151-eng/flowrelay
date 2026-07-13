@@ -118,57 +118,57 @@ export function Dashboard() {
     <div className="flex flex-col gap-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-xl font-semibold text-zinc-900 dark:text-zinc-50">FlowRelay</h1>
-          <p className="text-sm text-zinc-500 dark:text-zinc-400">
+          <h1 className="text-xl font-semibold text-zinc-50">FlowRelay</h1>
+          <p className="text-sm text-zinc-400">
             Reshape a JSON payload and relay it to any webhook — a Zapier-style connector.
           </p>
         </div>
         <button
           onClick={() => setShowForm((s) => !s)}
-          className="rounded-lg bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-900 px-4 py-2 text-sm font-medium"
+          className="rounded-lg bg-amber-500 text-zinc-950 px-4 py-2 text-sm font-semibold hover:bg-amber-400"
         >
           {showForm ? "Cancel" : "+ New connector"}
         </button>
       </div>
 
       {showForm && (
-        <form onSubmit={createConnector} className="flex flex-col gap-3 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-4">
+        <form onSubmit={createConnector} className="flex flex-col gap-3 rounded-2xl border border-white/[0.06] bg-white/[0.03] p-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
             <input
               required
               placeholder="Connector name"
               value={name}
               onChange={(e) => setName(e.target.value)}
-              className="rounded-lg border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-950 px-3 py-2 text-sm"
+              className="rounded-lg border border-white/[0.08] bg-black/30 px-3 py-2 text-sm text-zinc-100 placeholder:text-zinc-500"
             />
             <input
               required
               placeholder="Target webhook URL (https://…)"
               value={targetUrl}
               onChange={(e) => setTargetUrl(e.target.value)}
-              className="rounded-lg border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-950 px-3 py-2 text-sm"
+              className="rounded-lg border border-white/[0.08] bg-black/30 px-3 py-2 text-sm font-mono text-zinc-100 placeholder:text-zinc-500"
             />
           </div>
 
-          <p className="text-xs font-medium text-zinc-500 dark:text-zinc-400 mt-2">Field mapping</p>
+          <p className="text-xs font-medium text-zinc-400 mt-2">Field mapping</p>
           {rules.map((rule, idx) => (
             <div key={idx} className="grid grid-cols-2 md:grid-cols-5 gap-2">
               <input
                 placeholder="source.path"
                 value={rule.sourcePath}
                 onChange={(e) => updateRule(idx, { sourcePath: e.target.value })}
-                className="rounded-lg border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-950 px-2 py-1.5 text-sm"
+                className="rounded-lg border border-white/[0.08] bg-black/30 px-2 py-1.5 text-sm font-mono text-zinc-100 placeholder:text-zinc-500"
               />
               <input
                 placeholder="target.path"
                 value={rule.targetPath}
                 onChange={(e) => updateRule(idx, { targetPath: e.target.value })}
-                className="rounded-lg border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-950 px-2 py-1.5 text-sm"
+                className="rounded-lg border border-white/[0.08] bg-black/30 px-2 py-1.5 text-sm font-mono text-zinc-100 placeholder:text-zinc-500"
               />
               <select
                 value={rule.transform}
                 onChange={(e) => updateRule(idx, { transform: e.target.value as MappingRule["transform"] })}
-                className="rounded-lg border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-950 px-2 py-1.5 text-sm"
+                className="rounded-lg border border-white/[0.08] bg-black/30 px-2 py-1.5 text-sm text-zinc-100"
               >
                 {TRANSFORMS.map((t) => (
                   <option key={t} value={t}>{t}</option>
@@ -178,12 +178,12 @@ export function Dashboard() {
                 placeholder="fallback (optional)"
                 value={rule.fallback}
                 onChange={(e) => updateRule(idx, { fallback: e.target.value })}
-                className="rounded-lg border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-950 px-2 py-1.5 text-sm"
+                className="rounded-lg border border-white/[0.08] bg-black/30 px-2 py-1.5 text-sm text-zinc-100 placeholder:text-zinc-500"
               />
               <button
                 type="button"
                 onClick={() => setRules((rs) => rs.filter((_, i) => i !== idx))}
-                className="text-xs text-red-600 hover:underline"
+                className="text-xs text-red-400 hover:underline"
               >
                 Remove
               </button>
@@ -192,13 +192,13 @@ export function Dashboard() {
           <button
             type="button"
             onClick={() => setRules((rs) => [...rs, emptyRule()])}
-            className="self-start text-xs text-indigo-600 dark:text-indigo-400 hover:underline"
+            className="self-start text-xs text-amber-400 hover:underline"
           >
             + Add mapping rule
           </button>
 
-          {formError && <p className="text-sm text-red-600">{formError}</p>}
-          <button type="submit" className="mt-2 rounded-lg bg-indigo-600 text-white py-2 text-sm font-medium hover:bg-indigo-700">
+          {formError && <p className="text-sm text-red-400">{formError}</p>}
+          <button type="submit" className="mt-2 rounded-lg bg-amber-500 text-zinc-950 py-2 text-sm font-semibold hover:bg-amber-400">
             Save connector
           </button>
         </form>
@@ -206,24 +206,28 @@ export function Dashboard() {
 
       <div className="flex flex-col gap-3">
         {connectors.map((c) => (
-          <div key={c.id} className="rounded-xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-4">
+          <div key={c.id} className="rounded-2xl border border-white/[0.06] bg-white/[0.03] p-[18px]">
             <div className="flex items-center justify-between">
               <div>
-                <p className="font-medium text-zinc-900 dark:text-zinc-50">{c.name}</p>
-                <p className="text-xs text-zinc-400">{c.targetUrl} · {c.mapping.length} field{c.mapping.length === 1 ? "" : "s"}</p>
+                <p className="font-semibold text-zinc-100">{c.name}</p>
+                <p className="mt-0.5 font-mono text-[11px] text-zinc-500">
+                  {c.targetUrl} · {c.mapping.length} field{c.mapping.length === 1 ? "" : "s"}
+                </p>
               </div>
-              <button onClick={() => removeConnector(c.id)} className="text-xs text-red-600 hover:underline">Delete</button>
+              <button onClick={() => removeConnector(c.id)} className="text-[11.5px] font-medium text-red-400 hover:underline">
+                Delete
+              </button>
             </div>
             <textarea
               value={payloadDrafts[c.id] ?? SAMPLE_PAYLOAD}
               onChange={(e) => setPayloadDrafts((d) => ({ ...d, [c.id]: e.target.value }))}
               rows={5}
-              className="mt-3 w-full rounded-lg border border-zinc-300 dark:border-zinc-700 bg-zinc-50 dark:bg-zinc-950 px-3 py-2 font-mono text-xs"
+              className="mt-3.5 w-full rounded-[10px] border-0 bg-black/40 px-3.5 py-3 font-mono text-[11.5px] text-emerald-300/90"
             />
             <button
               onClick={() => sendTest(c)}
               disabled={sending === c.id}
-              className="mt-2 rounded-lg bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-900 px-4 py-2 text-sm font-medium disabled:opacity-50"
+              className="mt-3 rounded-lg bg-amber-500 text-zinc-950 px-4 py-2 text-sm font-semibold hover:bg-amber-400 disabled:opacity-50"
             >
               {sending === c.id ? "Sending…" : "Send test event"}
             </button>
@@ -232,38 +236,30 @@ export function Dashboard() {
       </div>
 
       <section>
-        <h2 className="mb-2 text-sm font-medium text-zinc-700 dark:text-zinc-300">Delivery log</h2>
+        <h2 className="mb-2.5 text-[13.5px] font-semibold text-zinc-300">Delivery log</h2>
         {deliveries.length === 0 ? (
-          <p className="text-sm text-zinc-400">No deliveries yet — send a test event above.</p>
+          <p className="text-sm text-zinc-500">No deliveries yet — send a test event above.</p>
         ) : (
           <div className="flex flex-col gap-2">
             {deliveries.map((d) => (
-              <details key={d.id} className="rounded-lg border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-3">
+              <details key={d.id} className="rounded-[10px] border border-white/[0.06] bg-white/[0.03] p-3.5">
                 <summary className="flex cursor-pointer items-center justify-between text-sm">
-                  <span className="text-zinc-800 dark:text-zinc-200">{d.connectorName}</span>
-                  <span className="flex items-center gap-3 text-xs text-zinc-400">
-                    <span
-                      className={
-                        d.error
-                          ? "text-red-600"
-                          : d.responseStatus && d.responseStatus < 300
-                          ? "text-emerald-600"
-                          : "text-amber-600"
-                      }
-                    >
+                  <span className="font-medium text-zinc-200">{d.connectorName}</span>
+                  <span className="flex items-center gap-3.5 font-mono text-[11.5px] text-zinc-500">
+                    <span className={d.error ? "text-red-400" : d.responseStatus && d.responseStatus < 300 ? "text-emerald-400" : "text-amber-400"}>
                       {d.error ?? `HTTP ${d.responseStatus}`}
                     </span>
                     <span>{d.durationMs}ms</span>
                   </span>
                 </summary>
-                <div className="mt-2 grid grid-cols-1 md:grid-cols-2 gap-2 text-xs">
+                <div className="mt-3 grid grid-cols-1 md:grid-cols-2 gap-3 text-xs">
                   <div>
-                    <p className="font-medium text-zinc-500 mb-1">Sent (transformed)</p>
-                    <pre className="overflow-x-auto rounded bg-zinc-50 dark:bg-zinc-950 p-2">{JSON.stringify(d.requestBody, null, 2)}</pre>
+                    <p className="mb-1 font-medium text-zinc-500">Sent (transformed)</p>
+                    <pre className="overflow-x-auto rounded-lg bg-black/40 p-2.5 font-mono text-emerald-300/90">{JSON.stringify(d.requestBody, null, 2)}</pre>
                   </div>
                   <div>
-                    <p className="font-medium text-zinc-500 mb-1">Response</p>
-                    <pre className="overflow-x-auto rounded bg-zinc-50 dark:bg-zinc-950 p-2">{d.responseBody ?? d.error ?? "—"}</pre>
+                    <p className="mb-1 font-medium text-zinc-500">Response</p>
+                    <pre className="overflow-x-auto rounded-lg bg-black/40 p-2.5 font-mono text-zinc-300">{d.responseBody ?? d.error ?? "—"}</pre>
                   </div>
                 </div>
               </details>
