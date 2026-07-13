@@ -1,36 +1,53 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# FlowRelay
 
-## Getting Started
+> A Zapier-style webhook connector: reshape a JSON payload with declarative field
+> mapping and relay it to any webhook, with delivery logging and SSRF-guarded targets.
 
-First, run the development server:
+**Live demo:** _(added after deploy)_ — a demo connector is pre-loaded, pointed at [httpbin.org](https://httpbin.org/post) so you can send a test event immediately and see exactly what was sent and received.
+
+## What it does
+
+- **Connectors** — name a target webhook URL, add custom headers, and define a field-mapping pipeline (source path → target path, with optional `uppercase`/`lowercase`/`trim` and a fallback value).
+- **Send test event** — paste or edit a sample JSON payload, apply the mapping, and POST the transformed result to the real target URL. No mocking — this hits an actual endpoint.
+- **Delivery log** — every send is recorded with status code, duration, and the full transformed request/response bodies, expandable per entry.
+
+## Architecture decisions
+
+- **SSRF guard on every send, not just at creation.** [`lib/urlGuard.ts`](lib/urlGuard.ts) blocks loopback, RFC1918 private ranges, and link-local addresses — including `169.254.169.254`, the AWS/GCP/Azure cloud metadata endpoint, the single most common SSRF exploitation target. This is a real concern for any public tool that relays to user-supplied URLs, not a hypothetical one; the check runs both when a connector is saved and again at send time, since a connector's target could predate a guard-rule change.
+- **Bounded outbound requests.** Sends go through an `AbortController` with an 8-second timeout, so a slow or unresponsive target can't tie up the request indefinitely.
+- **Declarative mapping over an expression language.** `lib/transform.ts` implements dot-path get/set plus a handful of named transforms — enough for the common "rename and reshape" case without pulling in a full JSONata/JMESPath dependency, and it's fully unit-testable as pure functions.
+- **In-memory demo storage.** Connectors and delivery logs live in a module-level store scoped to the serverless instance — resets on cold start/redeploy, the same zero-config tradeoff used across this portfolio.
+
+## Stack
+
+Next.js 16 (App Router) · React 19 · TypeScript · Tailwind CSS 4 · Vitest
+
+## Running locally
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm install
+npm run dev   # http://localhost:3000
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Testing
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```bash
+npm test
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Covers the mapping engine (renaming, reshaping, transforms, fallbacks, edge cases) and the
+URL guard (valid URLs, invalid schemes, loopback, private ranges, the cloud metadata address,
+and a check that it doesn't false-positive on public IPs sharing a prefix with a private range).
 
-## Learn More
+## Deploying
 
-To learn more about Next.js, take a look at the following resources:
+```bash
+npm i -g vercel
+vercel --prod
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+No environment variables required — it works out of the box.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+---
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Built by **Ahmed Al-Madani**
